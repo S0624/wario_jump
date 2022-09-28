@@ -51,11 +51,12 @@ void Player::update()
 	else if  (m_isJumpDown)
 	{
 		m_pos.y += 4.0f;
-		if (m_pos.y = m_fieldY - m_graphSize.y)
-			m_pos. y = m_fieldY = m_graphSize.y;
+		if (m_pos.y >= m_fieldY - m_graphSize.y)
+		{
+			m_pos.y = m_fieldY - m_graphSize.y;
 			m_isJumpUp = false;
 			m_isJumpDown = false;
-
+		}
 	}
 }
 
