@@ -24,6 +24,11 @@ public:
 	// サイズの取得
 	Vec2 getSize() const { return m_size; }
 
+//private:
+	void updateNormal();			//まっすぐ進む
+	void updateStop();				//一時停止フェイント
+	void updateJump();				//ジャンプする
+	void updateReturn();			//途中で引き返す（必ず成功）
 private:
 	// グラフィックハンドル
 	int m_handle;
