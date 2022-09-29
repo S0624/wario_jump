@@ -31,6 +31,7 @@ private:
 		kMoveTypeStop,
 		kMoveTypeJump,
 		kMoveTypeReturn,
+		kMoveTypeNum,
 	}MoveType;
 
 private:
@@ -56,4 +57,8 @@ private:
 	Vec2 m_vec;
 	// ínñ ÇÃçÇÇ≥
 	float m_fieldY;
+
+	int m_stopFrame;
+
+	bool m_isJump;
 };
