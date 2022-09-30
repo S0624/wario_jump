@@ -1,14 +1,10 @@
 #include "DxLib.h"
-
 #include "game.h"
-#include "player.h"
-#include "car.h"
 
-namespace
-{
-	// 地面の高さ
-	constexpr int kFieldY = Game::kScreenHeight - 64;
-}
+#include "SceneMain.h"
+#include "SceneTitle.h"
+#include "SceneTest.h"
+
 
 // プログラムは WinMain から始まります
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -25,19 +21,28 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		return -1;			// エラーが起きたら直ちに終了
 	}
 
-	int hPlayer = LoadGraph("data/player.png");
-	int hCar = LoadGraph("data/car.png");
-
-	Player player;
-	player.setGraphic(hPlayer);
-	player.setup(kFieldY);
-
-	Car car;
-	car.setGraphic(hCar);
-	car.setup(kFieldY);
-
 	// ダブルバッファモード
 	SetDrawScreen(DX_SCREEN_BACK);
+
+	//現在のシーン番号		0:Title 1Main 2:Test
+	int sceneNo = 0;
+
+	SceneTitle sceneTitle;
+	SceneMain sceneMain;
+	SceneTest sceneTest;
+
+	switch (sceneNo)
+	{
+	case 0:
+		sceneTitle.init();
+		break;
+	case 1:
+		sceneMain.init();
+		break;
+	case 2:
+		sceneTest.init();
+		break;
+	}
 
 	while (ProcessMessage() == 0)
 	{
@@ -45,18 +50,42 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// 画面のクリア
 		ClearDrawScreen();
 
-		player.update();
-		car.update();
-
-		if (player.isCol(car))
+		//シーン変更フラグ
+		bool isChange = false;
+		switch (sceneNo)
 		{
-			player.setDead(true);
+		case 0:
+			isChange = sceneTitle.update();
+			sceneTitle.draw();
+			if (isChange)
+			{
+				sceneTitle.end();
+
+				sceneMain.init();
+				sceneNo = 1;
+			}
+			break;
+		case 1:
+			sceneMain.update();
+			break;
+		case 2:
+			sceneTest.update();
+			break;
 		}
 
-		// 地面の描画
-		DrawLine(0, kFieldY, Game::kScreenWidth, kFieldY, GetColor(255, 255, 255));
-		player.draw();
-		car.draw();
+		switch (sceneNo)
+		{
+		case 0:
+			sceneTitle.draw();
+			break;
+		case 1:
+			sceneMain.draw();
+			break;
+		case 2:
+			sceneTest.draw();
+			break;
+		}
+
 
 		//裏画面を表画面を入れ替える
 		ScreenFlip();
@@ -70,8 +99,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 	}
 
-	DeleteGraph(hPlayer);
-	DeleteGraph(hCar);
+	switch (sceneNo)
+	{
+	case 0:
+		sceneTitle.end();
+		break;
+	case 1:
+		sceneMain.end();
+		break;
+	case 2:
+		sceneTest.end();
+		break;
+	}
 
 	DxLib_End();				// ＤＸライブラリ使用の終了処理
 
