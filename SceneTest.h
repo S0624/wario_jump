@@ -17,4 +17,6 @@ public:
 	bool update();
 	//•`‰æ
 	void draw();
+
+
 };

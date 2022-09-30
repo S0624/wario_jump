@@ -17,4 +17,10 @@ public:
 	bool update();
 	//描画
 	void draw();
+
+private:
+	//フェード処理
+	int m_fadeBright;
+	//フェード処理
+	int m_fadeSpeed;
 };
